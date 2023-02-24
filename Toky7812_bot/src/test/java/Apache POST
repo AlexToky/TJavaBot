@@ -1,0 +1,120 @@
+https://www.techiedelight.com/ru/send-http-post-request-java/
+
+3. Использование Апача HttpClient API
+Если ваш проект открыт для внешних библиотек, рассмотрите возможность использования Apache HttpClient API
+для выполнения HTTP-методов. HttpClient внутренне обрабатывает один или несколько обменов HTTP-запросами/HTTP-ответами,
+необходимыми для успешного выполнения HTTP-метода. Ожидается, что пользователь предоставит объект запроса для выполнения,
+и HttpClient ожидается, что он передаст запрос на целевой сервер,
+вернет соответствующий объект ответа или выдаст исключение, если выполнение было неудачным.
+
+Вот простой пример, демонстрирующий, как мы можем использовать HttpClient API для отправки запроса HTTP POST.
+Пожалуйста, обратитесь к официальному Примеры HttpClient чтобы получить более глубокое представление обо всех функциях,
+предлагаемых этим модулем.
+
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.net.URI;
+
+class Main
+{
+    public static void main(String[] args) throws Exception {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try {
+            HttpUriRequest httppost = RequestBuilder.post()
+                    .setUri(new URI("https://postman-echo.com/post"))
+                    .addParameter("foo1", "bar1")
+                    .addParameter("foo2", "bar2")
+                    .build();
+
+            CloseableHttpResponse response = httpclient.execute(httppost);
+            try {
+                System.out.println(EntityUtils.toString(response.getEntity()));
+            } finally {
+                response.close();
+            }
+        } finally {
+            httpclient.close();
+        }
+    }
+}
+Скачать код
+
+
+Стоит отметить, что, как и Apache HttpClient, доступно несколько других библиотек Java,
+упрощающих HTTP-запросы из кода Java.
+Охват любой другой сторонней библиотеки выходит за рамки этой статьи.
+
+Вот и все, что нужно для создания HTTP-запроса POST в Java.
+
+---------------------------------------------------------------------------------------------------------------
+https://coderlessons.com/tutorials/java-tekhnologii/izuchite-apache-http-client/apache-httpclient-forma-vkhoda-na-osnove
+
+пример
+В следующем примере показано, как войти в форму, отправив учетные данные для входа.
+Здесь мы отправили два параметра – имя пользователя и пароль в форму
+и попытались напечатать сущность сообщения и статус запроса.
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+public class FormLoginExample {
+
+   public static void main(String args[]) throws Exception {
+
+      //Creating CloseableHttpClient object
+      CloseableHttpClient httpclient = HttpClients.createDefault();
+
+      //Creating the RequestBuilder object
+      RequestBuilder reqbuilder = RequestBuilder.post();
+
+      //Setting URI and parameters
+      RequestBuilder reqbuilder1 = reqbuilder.setUri("http://httpbin.org/post");
+      RequestBuilder reqbuilder2 = reqbuilder1.addParameter("Name",
+         "username").addParameter("password", "password");
+
+      //Building the HttpUriRequest object
+      HttpUriRequest httppost = reqbuilder2.build();
+
+      //Executing the request
+      HttpResponse httpresponse = httpclient.execute(httppost);
+
+      //Printing the status and the contents of the response
+      System.out.println(EntityUtils.toString(httpresponse.getEntity()));
+      System.out.println(httpresponse.getStatusLine());
+   }
+}
+Выход
+При выполнении вышеупомянутая программа генерирует следующий вывод –
+
+{
+   "args": {},
+   "data": "",
+   "files": {},
+   "form": {
+      "Name": "username",
+      "password": "password"
+   },
+   "headers": {
+      "Accept-Encoding": "gzip,deflate",
+      "Connection": "close",
+      "Content-Length": "31",
+      "Content-Type": "application/x-www-form-urlencoded; charset = UTF-8",
+      "Host": "httpbin.org",
+      "User-Agent": "Apache-HttpClient/4.5.6 (Java/1.8.0_91)"
+   },
+   "json": null,
+   "origin": "117.216.245.180",
+   "url": "http://httpbin.org/post"
+}
+HTTP/1.1 200 OK
